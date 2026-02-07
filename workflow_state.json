@@ -1,0 +1,45 @@
+{
+  "workflow_name": "JobMatch India Workflow",
+  "created_at": "2026-02-07",
+  "agents": {
+    "manager": {
+      "agent_id": "6986efcb95535c4535914074",
+      "name": "Job Match Coordinator",
+      "type": "Manager",
+      "provider": "OpenAI",
+      "model": "gpt-4.1"
+    },
+    "sub_agents": [
+      {
+        "agent_id": "6986ef7f95535c453591406a",
+        "name": "Resume Analyzer Agent",
+        "type": "Sub-Agent",
+        "provider": "Anthropic",
+        "model": "claude-sonnet-4-5"
+      },
+      {
+        "agent_id": "6986ef9066daebcd26150dc6",
+        "name": "Job Search Agent",
+        "type": "Sub-Agent",
+        "provider": "Perplexity",
+        "model": "sonar-pro"
+      },
+      {
+        "agent_id": "6986efa295535c453591406d",
+        "name": "Match Scoring Agent",
+        "type": "Sub-Agent",
+        "provider": "OpenAI",
+        "model": "gpt-4.1"
+      },
+      {
+        "agent_id": "6986efb614a9517b94c5d297",
+        "name": "Recommendation Agent",
+        "type": "Sub-Agent",
+        "provider": "Anthropic",
+        "model": "claude-sonnet-4-5"
+      }
+    ]
+  },
+  "workflow_status": "complete",
+  "total_agents": 5
+}

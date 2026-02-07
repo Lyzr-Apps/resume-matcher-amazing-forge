@@ -1,0 +1,93 @@
+{
+  "nodes": [
+    {
+      "id": "input_node",
+      "type": "Input",
+      "label": "User Input - Resume Upload",
+      "nodeCategory": "input"
+    },
+    {
+      "id": "job_match_coordinator",
+      "type": "Agent",
+      "label": "Job Match Coordinator",
+      "nodeCategory": "agent",
+      "agent_id": "6986efcb95535c4535914074"
+    },
+    {
+      "id": "resume_analyzer_agent",
+      "type": "Agent",
+      "label": "Resume Analyzer Agent",
+      "nodeCategory": "agent",
+      "agent_id": "6986ef7f95535c453591406a"
+    },
+    {
+      "id": "job_search_agent",
+      "type": "Agent",
+      "label": "Job Search Agent",
+      "nodeCategory": "agent",
+      "agent_id": "6986ef9066daebcd26150dc6"
+    },
+    {
+      "id": "match_scoring_agent",
+      "type": "Agent",
+      "label": "Match Scoring Agent",
+      "nodeCategory": "agent",
+      "agent_id": "6986efa295535c453591406d"
+    },
+    {
+      "id": "recommendation_agent",
+      "type": "Agent",
+      "label": "Recommendation Agent",
+      "nodeCategory": "agent",
+      "agent_id": "6986efb614a9517b94c5d297"
+    },
+    {
+      "id": "output_node",
+      "type": "Output",
+      "label": "Ranked Job Matches & Recommendations",
+      "nodeCategory": "end"
+    }
+  ],
+  "edges": [
+    {
+      "source": "input_node",
+      "target": "job_match_coordinator"
+    },
+    {
+      "source": "job_match_coordinator",
+      "target": "resume_analyzer_agent"
+    },
+    {
+      "source": "job_match_coordinator",
+      "target": "job_search_agent"
+    },
+    {
+      "source": "job_match_coordinator",
+      "target": "match_scoring_agent"
+    },
+    {
+      "source": "job_match_coordinator",
+      "target": "recommendation_agent"
+    },
+    {
+      "source": "resume_analyzer_agent",
+      "target": "job_match_coordinator"
+    },
+    {
+      "source": "job_search_agent",
+      "target": "job_match_coordinator"
+    },
+    {
+      "source": "match_scoring_agent",
+      "target": "job_match_coordinator"
+    },
+    {
+      "source": "recommendation_agent",
+      "target": "job_match_coordinator"
+    },
+    {
+      "source": "job_match_coordinator",
+      "target": "output_node"
+    }
+  ]
+}
