@@ -427,15 +427,21 @@ Return the response in this JSON format:
       // Check if it's an API credit/availability error or any API error
       const isAPIError =
         errorMessage.toLowerCase().includes('429') ||
+        errorMessage.toLowerCase().includes('405') ||
+        errorMessage.toLowerCase().includes('method not allowed') ||
         errorMessage.toLowerCase().includes('credits') ||
         errorMessage.toLowerCase().includes('quota') ||
         errorMessage.toLowerCase().includes('exhausted') ||
         errorMessage.toLowerCase().includes('limit') ||
         errorMessage.toLowerCase().includes('api') ||
         resultError.toLowerCase().includes('429') ||
+        resultError.toLowerCase().includes('405') ||
+        resultError.toLowerCase().includes('method not allowed') ||
         resultError.toLowerCase().includes('credits') ||
         resultError.toLowerCase().includes('api') ||
         resultDetails.toLowerCase().includes('429') ||
+        resultDetails.toLowerCase().includes('405') ||
+        resultDetails.toLowerCase().includes('method not allowed') ||
         (result && !result.success)
 
       // Use demo data as fallback for any API-related errors
