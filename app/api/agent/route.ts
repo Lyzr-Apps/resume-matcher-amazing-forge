@@ -157,10 +157,13 @@ export async function POST(request: NextRequest) {
 
     const rawText = await response.text()
 
+    console.log(`[Agent API] Status: ${response.status}, Response preview:`, rawText.substring(0, 200))
+
     if (response.ok) {
       const parsed = parseLLMJson(rawText)
 
       if (parsed?.success === false && parsed?.error) {
+        console.error('[Agent API] Error in response:', parsed.error)
         return NextResponse.json({
           success: false,
           response: {
@@ -191,6 +194,8 @@ export async function POST(request: NextRequest) {
         errorMsg = errorData?.error || errorData?.message || errorMsg
       } catch {}
 
+      console.error(`[Agent API] HTTP ${response.status} error:`, errorMsg)
+
       return NextResponse.json(
         {
           success: false,
@@ -200,6 +205,7 @@ export async function POST(request: NextRequest) {
             message: errorMsg,
           },
           error: errorMsg,
+          details: rawText,
           raw_response: rawText,
         },
         { status: response.status }

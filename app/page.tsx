@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { callAIAgent } from '@/lib/aiAgent'
+import { callAIAgent, type AIAgentResponse } from '@/lib/aiAgent'
 import type {
   AppState,
   UserPreferences,
@@ -21,6 +21,52 @@ import type {
 const MANAGER_AGENT_ID = '6986efcb95535c4535914074'
 const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
 const ALLOWED_FILE_TYPES = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
+
+// Demo data for testing UI when API is unavailable
+const DEMO_DATA: JobMatchResponse = {
+  top_10_jobs: [
+    {
+      job_id: '1',
+      title: 'Senior React Developer',
+      company: 'Tech Mahindra',
+      location: 'Bangalore, India',
+      matching_score: 92,
+      match_reasons: ['5+ years React experience', 'Node.js expertise', 'Remote work preference'],
+      full_description: 'We are seeking a Senior React Developer to join our growing team. You will work on cutting-edge web applications using React, TypeScript, and Node.js.',
+      score_breakdown: { skills: 95, experience: 90, location: 88, industry: 92, education: 90, job_type: 95 },
+      apply_link: 'https://example.com/apply'
+    },
+    {
+      job_id: '2',
+      title: 'Full Stack Engineer',
+      company: 'Infosys',
+      location: 'Pune, India',
+      matching_score: 88,
+      match_reasons: ['Full stack experience', 'JavaScript proficiency', 'IT industry background'],
+      full_description: 'Join our team as a Full Stack Engineer working with modern web technologies including React, Node.js, and cloud platforms.',
+      score_breakdown: { skills: 90, experience: 85, location: 85, industry: 90, education: 88, job_type: 90 },
+      apply_link: 'https://example.com/apply'
+    },
+    {
+      job_id: '3',
+      title: 'Software Development Engineer',
+      company: 'Wipro',
+      location: 'Hyderabad, India',
+      matching_score: 85,
+      match_reasons: ['Strong coding skills', 'CS degree', 'Agile experience'],
+      full_description: 'Looking for SDE to develop scalable applications using React, Python, and microservices architecture.',
+      score_breakdown: { skills: 88, experience: 82, location: 80, industry: 88, education: 90, job_type: 85 },
+      apply_link: 'https://example.com/apply'
+    }
+  ],
+  resume_recommendations: {
+    missing_skills: ['TypeScript', 'AWS/Cloud', 'Docker/Kubernetes', 'System Design'],
+    keywords_to_add: ['Microservices', 'CI/CD', 'Agile/Scrum', 'RESTful APIs'],
+    format_tips: ['Add quantifiable achievements', 'Include project impact metrics', 'Highlight leadership roles'],
+    achievement_suggestions: ['Led team of X developers', 'Improved performance by X%', 'Reduced deployment time by X hours']
+  },
+  match_summary: 'Found 10 excellent matches based on your profile. Top matches are in IT/Tech industry with strong React and full-stack roles.'
+}
 
 const LOCATION_OPTIONS = [
   'Bangalore', 'Mumbai', 'Delhi NCR', 'Pune', 'Hyderabad', 'Chennai',
@@ -163,6 +209,8 @@ export default function Home() {
     setState(prev => ({ ...prev, loading: true, error: null }))
     setLoadingMessage('Analyzing resume...')
 
+    let result: AIAgentResponse | undefined
+
     try {
       // Extract resume text
       const resumeText = await extractResumeText(state.resume.file)
@@ -222,42 +270,64 @@ Return the response in this JSON format:
       setLoadingMessage('Calculating matches...')
 
       // Call manager agent
-      const result = await callAIAgent(prompt, MANAGER_AGENT_ID)
+      result = await callAIAgent(prompt, MANAGER_AGENT_ID)
+
+      console.log('Agent API Response:', result)
 
       if (!result.success) {
         throw new Error(result.error || 'Failed to get job matches')
       }
 
-      // Parse response
+      // Parse response - the agent response is in result.response.result
       let jobMatchData: JobMatchResponse
 
-      // Try to extract JSON from response
-      const responseText = typeof result.response.result === 'string'
-        ? result.response.result
-        : JSON.stringify(result.response.result)
+      // Check what we got back
+      const agentResult = result.response?.result
+      console.log('Agent Result:', agentResult)
 
-      try {
-        // Try direct parse first
-        jobMatchData = JSON.parse(responseText)
-      } catch {
-        // Try to find JSON in text
-        const jsonMatch = responseText.match(/\{[\s\S]*\}/)
-        if (jsonMatch) {
-          jobMatchData = JSON.parse(jsonMatch[0])
-        } else {
-          // Create fallback response
-          jobMatchData = {
-            top_10_jobs: [],
-            resume_recommendations: {
-              missing_skills: [],
-              keywords_to_add: [],
-              format_tips: [],
-              achievement_suggestions: []
-            },
-            match_summary: responseText
+      // If it's already an object with top_10_jobs, use it directly
+      if (agentResult && typeof agentResult === 'object' && 'top_10_jobs' in agentResult) {
+        jobMatchData = agentResult as JobMatchResponse
+      } else {
+        // Try to parse from various possible locations
+        let textToParse = ''
+
+        if (typeof agentResult === 'string') {
+          textToParse = agentResult
+        } else if (result.response?.message) {
+          textToParse = result.response.message
+        } else if (agentResult?.text) {
+          textToParse = agentResult.text
+        } else if (agentResult) {
+          textToParse = JSON.stringify(agentResult)
+        }
+
+        console.log('Text to parse:', textToParse.substring(0, 500))
+
+        try {
+          // Try direct parse first
+          jobMatchData = JSON.parse(textToParse)
+        } catch {
+          // Try to find JSON in text (handle markdown code blocks)
+          const jsonMatch = textToParse.match(/```json\s*([\s\S]*?)\s*```/) ||
+                           textToParse.match(/```\s*([\s\S]*?)\s*```/) ||
+                           textToParse.match(/\{[\s\S]*"top_10_jobs"[\s\S]*\}/)
+
+          if (jsonMatch) {
+            try {
+              jobMatchData = JSON.parse(jsonMatch[1] || jsonMatch[0])
+            } catch (e2) {
+              console.error('Failed to parse extracted JSON:', e2)
+              throw new Error('Unable to parse job matching results. Please try again.')
+            }
+          } else {
+            console.error('No JSON found in response')
+            throw new Error('No valid job data received. Please try again.')
           }
         }
       }
+
+      console.log('Parsed job data:', jobMatchData)
 
       setState(prev => ({
         ...prev,
@@ -268,11 +338,36 @@ Return the response in this JSON format:
       }))
 
     } catch (error) {
-      setState(prev => ({
-        ...prev,
-        loading: false,
-        error: error instanceof Error ? error.message : 'An error occurred while finding jobs'
-      }))
+      console.error('Error in findMatchingJobs:', error)
+
+      const errorMessage = error instanceof Error ? error.message : 'An error occurred while finding jobs'
+
+      // Check if it's an API credit/availability error
+      const isCreditsError =
+        errorMessage.includes('429') ||
+        errorMessage.includes('credits') ||
+        errorMessage.includes('quota') ||
+        errorMessage.includes('exhausted') ||
+        errorMessage.toLowerCase().includes('limit') ||
+        (result && !result.success && result.error)
+
+      // Use demo data as fallback for testing UI
+      if (isCreditsError) {
+        console.log('Using demo data due to API credits exhaustion')
+        setState(prev => ({
+          ...prev,
+          loading: false,
+          results: DEMO_DATA,
+          view: 'results',
+          error: 'Showing demo data (API credits exhausted). Refill credits at https://studio.lyzr.ai for real job matching.'
+        }))
+      } else {
+        setState(prev => ({
+          ...prev,
+          loading: false,
+          error: `Error: ${errorMessage}. Please check the browser console for more details.`
+        }))
+      }
     }
   }
 
@@ -527,6 +622,14 @@ Return the response in this JSON format:
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Jobs List - 2/3 width */}
             <div className="lg:col-span-2 space-y-4">
+              {/* Show error/warning if present */}
+              {state.error && (
+                <Alert className="bg-yellow-50 border-yellow-200">
+                  <FiAlertCircle className="h-4 w-4 text-yellow-600" />
+                  <AlertDescription className="text-yellow-800">{state.error}</AlertDescription>
+                </Alert>
+              )}
+
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900">
