@@ -34,7 +34,7 @@ const DEMO_DATA: JobMatchResponse = {
       match_reasons: ['5+ years React experience', 'Node.js expertise', 'Remote work preference'],
       full_description: 'We are seeking a Senior React Developer to join our growing team. You will work on cutting-edge web applications using React, TypeScript, and Node.js. Must have strong experience in modern frontend development.',
       score_breakdown: { skills: 95, experience: 90, location: 88, industry: 92, education: 90, job_type: 95 },
-      apply_link: 'https://example.com/apply'
+      apply_link: '#demo-job-link'
     },
     {
       job_id: '2',
@@ -45,7 +45,7 @@ const DEMO_DATA: JobMatchResponse = {
       match_reasons: ['Full stack experience', 'JavaScript proficiency', 'IT industry background'],
       full_description: 'Join our team as a Full Stack Engineer working with modern web technologies including React, Node.js, and cloud platforms. Great opportunity for career growth.',
       score_breakdown: { skills: 90, experience: 85, location: 85, industry: 90, education: 88, job_type: 90 },
-      apply_link: 'https://example.com/apply'
+      apply_link: '#demo-job-link'
     },
     {
       job_id: '3',
@@ -56,7 +56,7 @@ const DEMO_DATA: JobMatchResponse = {
       match_reasons: ['Strong coding skills', 'CS degree', 'Agile experience'],
       full_description: 'Looking for SDE to develop scalable applications using React, Python, and microservices architecture. Work on innovative projects.',
       score_breakdown: { skills: 88, experience: 82, location: 80, industry: 88, education: 90, job_type: 85 },
-      apply_link: 'https://example.com/apply'
+      apply_link: '#demo-job-link'
     },
     {
       job_id: '4',
@@ -67,7 +67,7 @@ const DEMO_DATA: JobMatchResponse = {
       match_reasons: ['React expertise', 'UI/UX skills', 'Mumbai location match'],
       full_description: 'Frontend Developer position focused on building responsive web applications. Experience with React and modern CSS frameworks required.',
       score_breakdown: { skills: 85, experience: 80, location: 90, industry: 82, education: 85, job_type: 80 },
-      apply_link: 'https://example.com/apply'
+      apply_link: '#demo-job-link'
     },
     {
       job_id: '5',
@@ -78,7 +78,7 @@ const DEMO_DATA: JobMatchResponse = {
       match_reasons: ['JavaScript mastery', 'Team collaboration', 'Full-time role'],
       full_description: 'Seeking JavaScript Developer with strong foundation in modern frameworks. Will work on client-facing applications.',
       score_breakdown: { skills: 82, experience: 78, location: 75, industry: 85, education: 80, job_type: 85 },
-      apply_link: 'https://example.com/apply'
+      apply_link: '#demo-job-link'
     },
     {
       job_id: '6',
@@ -89,7 +89,7 @@ const DEMO_DATA: JobMatchResponse = {
       match_reasons: ['Web development skills', 'Bangalore preferred', 'IT sector experience'],
       full_description: 'Web Developer role focusing on creating dynamic web applications. Knowledge of React, Node.js, and databases preferred.',
       score_breakdown: { skills: 80, experience: 75, location: 88, industry: 78, education: 75, job_type: 72 },
-      apply_link: 'https://example.com/apply'
+      apply_link: '#demo-job-link'
     },
     {
       job_id: '7',
@@ -100,7 +100,7 @@ const DEMO_DATA: JobMatchResponse = {
       match_reasons: ['UI development', 'Component libraries', 'Design systems'],
       full_description: 'UI Engineer to build reusable component libraries and design systems. Strong React and CSS skills required.',
       score_breakdown: { skills: 78, experience: 72, location: 70, industry: 80, education: 75, job_type: 75 },
-      apply_link: 'https://example.com/apply'
+      apply_link: '#demo-job-link'
     },
     {
       job_id: '8',
@@ -111,7 +111,7 @@ const DEMO_DATA: JobMatchResponse = {
       match_reasons: ['React knowledge transferable', 'Mobile interest', 'Hybrid role'],
       full_description: 'React Native Developer for mobile app development. React web experience is a plus. Work on cross-platform applications.',
       score_breakdown: { skills: 75, experience: 70, location: 85, industry: 70, education: 68, job_type: 65 },
-      apply_link: 'https://example.com/apply'
+      apply_link: '#demo-job-link'
     },
     {
       job_id: '9',
@@ -122,7 +122,7 @@ const DEMO_DATA: JobMatchResponse = {
       match_reasons: ['Senior role potential', 'Architecture skills', 'Remote option'],
       full_description: 'Frontend Architect position for experienced developers. Lead technical decisions and mentor junior developers.',
       score_breakdown: { skills: 72, experience: 85, location: 88, industry: 65, education: 68, job_type: 70 },
-      apply_link: 'https://example.com/apply'
+      apply_link: '#demo-job-link'
     },
     {
       job_id: '10',
@@ -133,7 +133,7 @@ const DEMO_DATA: JobMatchResponse = {
       match_reasons: ['Tech giant opportunity', 'Frontend specialization', 'Career growth'],
       full_description: 'Software Engineer focused on frontend development at Amazon. Build customer-facing features at scale.',
       score_breakdown: { skills: 70, experience: 65, location: 80, industry: 70, education: 72, job_type: 62 },
-      apply_link: 'https://example.com/apply'
+      apply_link: '#demo-job-link'
     }
   ],
   resume_recommendations: {
@@ -142,7 +142,7 @@ const DEMO_DATA: JobMatchResponse = {
     format_tips: ['Add quantifiable achievements', 'Include project impact metrics', 'Highlight leadership roles'],
     achievement_suggestions: ['Led team of X developers', 'Improved performance by X%', 'Reduced deployment time by X hours']
   },
-  match_summary: 'Found 10 excellent matches based on your profile. Top matches are in IT/Tech industry with strong React and full-stack roles.'
+  match_summary: '[DEMO DATA] These are sample job matches to demonstrate the UI. Real job matching requires agents with web search capabilities to scrape live listings from Naukri.com, LinkedIn, and Indeed.'
 }
 
 const LOCATION_OPTIONS = [
@@ -452,7 +452,7 @@ Return the response in this JSON format:
           loading: false,
           results: DEMO_DATA,
           view: 'results',
-          error: 'Showing demo data (API temporarily unavailable). Refill credits at https://studio.lyzr.ai for real job matching.'
+          error: 'DEMO MODE: Showing sample job matches. The AI agents need to be reconfigured with web search tools (Tavily) to scrape real job listings from Naukri, LinkedIn, and Indeed. Current agents do not have internet access. Please update agent configurations at https://studio.lyzr.ai to enable live job searching.'
         }))
       } else {
         setState(prev => ({
@@ -818,14 +818,23 @@ Return the response in this JSON format:
 
                             {/* Apply Button */}
                             {job.apply_link && (
-                              <Button
-                                asChild
-                                className="w-full bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700"
-                              >
-                                <a href={job.apply_link} target="_blank" rel="noopener noreferrer">
-                                  Apply Now
-                                </a>
-                              </Button>
+                              job.apply_link === '#demo-job-link' ? (
+                                <Button
+                                  disabled
+                                  className="w-full bg-gray-300 text-gray-600 cursor-not-allowed"
+                                >
+                                  Demo Job - Configure agents with web search to get real apply links
+                                </Button>
+                              ) : (
+                                <Button
+                                  asChild
+                                  className="w-full bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700"
+                                >
+                                  <a href={job.apply_link} target="_blank" rel="noopener noreferrer">
+                                    Apply Now
+                                  </a>
+                                </Button>
+                              )
                             )}
                           </div>
                         )}
