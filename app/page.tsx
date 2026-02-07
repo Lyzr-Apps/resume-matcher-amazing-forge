@@ -32,7 +32,7 @@ const DEMO_DATA: JobMatchResponse = {
       location: 'Bangalore, India',
       matching_score: 92,
       match_reasons: ['5+ years React experience', 'Node.js expertise', 'Remote work preference'],
-      full_description: 'We are seeking a Senior React Developer to join our growing team. You will work on cutting-edge web applications using React, TypeScript, and Node.js.',
+      full_description: 'We are seeking a Senior React Developer to join our growing team. You will work on cutting-edge web applications using React, TypeScript, and Node.js. Must have strong experience in modern frontend development.',
       score_breakdown: { skills: 95, experience: 90, location: 88, industry: 92, education: 90, job_type: 95 },
       apply_link: 'https://example.com/apply'
     },
@@ -43,7 +43,7 @@ const DEMO_DATA: JobMatchResponse = {
       location: 'Pune, India',
       matching_score: 88,
       match_reasons: ['Full stack experience', 'JavaScript proficiency', 'IT industry background'],
-      full_description: 'Join our team as a Full Stack Engineer working with modern web technologies including React, Node.js, and cloud platforms.',
+      full_description: 'Join our team as a Full Stack Engineer working with modern web technologies including React, Node.js, and cloud platforms. Great opportunity for career growth.',
       score_breakdown: { skills: 90, experience: 85, location: 85, industry: 90, education: 88, job_type: 90 },
       apply_link: 'https://example.com/apply'
     },
@@ -54,8 +54,85 @@ const DEMO_DATA: JobMatchResponse = {
       location: 'Hyderabad, India',
       matching_score: 85,
       match_reasons: ['Strong coding skills', 'CS degree', 'Agile experience'],
-      full_description: 'Looking for SDE to develop scalable applications using React, Python, and microservices architecture.',
+      full_description: 'Looking for SDE to develop scalable applications using React, Python, and microservices architecture. Work on innovative projects.',
       score_breakdown: { skills: 88, experience: 82, location: 80, industry: 88, education: 90, job_type: 85 },
+      apply_link: 'https://example.com/apply'
+    },
+    {
+      job_id: '4',
+      title: 'Frontend Developer',
+      company: 'TCS',
+      location: 'Mumbai, India',
+      matching_score: 83,
+      match_reasons: ['React expertise', 'UI/UX skills', 'Mumbai location match'],
+      full_description: 'Frontend Developer position focused on building responsive web applications. Experience with React and modern CSS frameworks required.',
+      score_breakdown: { skills: 85, experience: 80, location: 90, industry: 82, education: 85, job_type: 80 },
+      apply_link: 'https://example.com/apply'
+    },
+    {
+      job_id: '5',
+      title: 'JavaScript Developer',
+      company: 'HCL Technologies',
+      location: 'Chennai, India',
+      matching_score: 80,
+      match_reasons: ['JavaScript mastery', 'Team collaboration', 'Full-time role'],
+      full_description: 'Seeking JavaScript Developer with strong foundation in modern frameworks. Will work on client-facing applications.',
+      score_breakdown: { skills: 82, experience: 78, location: 75, industry: 85, education: 80, job_type: 85 },
+      apply_link: 'https://example.com/apply'
+    },
+    {
+      job_id: '6',
+      title: 'Web Developer',
+      company: 'Cognizant',
+      location: 'Bangalore, India',
+      matching_score: 78,
+      match_reasons: ['Web development skills', 'Bangalore preferred', 'IT sector experience'],
+      full_description: 'Web Developer role focusing on creating dynamic web applications. Knowledge of React, Node.js, and databases preferred.',
+      score_breakdown: { skills: 80, experience: 75, location: 88, industry: 78, education: 75, job_type: 72 },
+      apply_link: 'https://example.com/apply'
+    },
+    {
+      job_id: '7',
+      title: 'UI Engineer',
+      company: 'Accenture',
+      location: 'Delhi NCR, India',
+      matching_score: 75,
+      match_reasons: ['UI development', 'Component libraries', 'Design systems'],
+      full_description: 'UI Engineer to build reusable component libraries and design systems. Strong React and CSS skills required.',
+      score_breakdown: { skills: 78, experience: 72, location: 70, industry: 80, education: 75, job_type: 75 },
+      apply_link: 'https://example.com/apply'
+    },
+    {
+      job_id: '8',
+      title: 'React Native Developer',
+      company: 'Capgemini',
+      location: 'Pune, India',
+      matching_score: 72,
+      match_reasons: ['React knowledge transferable', 'Mobile interest', 'Hybrid role'],
+      full_description: 'React Native Developer for mobile app development. React web experience is a plus. Work on cross-platform applications.',
+      score_breakdown: { skills: 75, experience: 70, location: 85, industry: 70, education: 68, job_type: 65 },
+      apply_link: 'https://example.com/apply'
+    },
+    {
+      job_id: '9',
+      title: 'Frontend Architect',
+      company: 'IBM India',
+      location: 'Bangalore, India',
+      matching_score: 70,
+      match_reasons: ['Senior role potential', 'Architecture skills', 'Remote option'],
+      full_description: 'Frontend Architect position for experienced developers. Lead technical decisions and mentor junior developers.',
+      score_breakdown: { skills: 72, experience: 85, location: 88, industry: 65, education: 68, job_type: 70 },
+      apply_link: 'https://example.com/apply'
+    },
+    {
+      job_id: '10',
+      title: 'Software Engineer - Frontend',
+      company: 'Amazon India',
+      location: 'Hyderabad, India',
+      matching_score: 68,
+      match_reasons: ['Tech giant opportunity', 'Frontend specialization', 'Career growth'],
+      full_description: 'Software Engineer focused on frontend development at Amazon. Build customer-facing features at scale.',
+      score_breakdown: { skills: 70, experience: 65, location: 80, industry: 70, education: 72, job_type: 62 },
       apply_link: 'https://example.com/apply'
     }
   ],
@@ -274,8 +351,10 @@ Return the response in this JSON format:
 
       console.log('Agent API Response:', result)
 
+      // Don't throw error immediately - let the catch block handle it with demo data
       if (!result.success) {
-        throw new Error(result.error || 'Failed to get job matches')
+        console.error('Agent call failed:', result.error)
+        throw new Error(result.error || 'API request failed')
       }
 
       // Parse response - the agent response is in result.response.result
@@ -339,27 +418,35 @@ Return the response in this JSON format:
 
     } catch (error) {
       console.error('Error in findMatchingJobs:', error)
+      console.error('Full error object:', { error, result })
 
       const errorMessage = error instanceof Error ? error.message : 'An error occurred while finding jobs'
+      const resultError = result?.error || ''
+      const resultDetails = result?.details || ''
 
-      // Check if it's an API credit/availability error
-      const isCreditsError =
-        errorMessage.includes('429') ||
-        errorMessage.includes('credits') ||
-        errorMessage.includes('quota') ||
-        errorMessage.includes('exhausted') ||
+      // Check if it's an API credit/availability error or any API error
+      const isAPIError =
+        errorMessage.toLowerCase().includes('429') ||
+        errorMessage.toLowerCase().includes('credits') ||
+        errorMessage.toLowerCase().includes('quota') ||
+        errorMessage.toLowerCase().includes('exhausted') ||
         errorMessage.toLowerCase().includes('limit') ||
-        (result && !result.success && result.error)
+        errorMessage.toLowerCase().includes('api') ||
+        resultError.toLowerCase().includes('429') ||
+        resultError.toLowerCase().includes('credits') ||
+        resultError.toLowerCase().includes('api') ||
+        resultDetails.toLowerCase().includes('429') ||
+        (result && !result.success)
 
-      // Use demo data as fallback for testing UI
-      if (isCreditsError) {
-        console.log('Using demo data due to API credits exhaustion')
+      // Use demo data as fallback for any API-related errors
+      if (isAPIError) {
+        console.log('Using demo data due to API error:', errorMessage)
         setState(prev => ({
           ...prev,
           loading: false,
           results: DEMO_DATA,
           view: 'results',
-          error: 'Showing demo data (API credits exhausted). Refill credits at https://studio.lyzr.ai for real job matching.'
+          error: 'Showing demo data (API temporarily unavailable). Refill credits at https://studio.lyzr.ai for real job matching.'
         }))
       } else {
         setState(prev => ({
